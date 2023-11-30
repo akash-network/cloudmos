@@ -205,7 +205,7 @@ const ProvidersPage: React.FunctionComponent<Props> = ({}) => {
     <Layout isLoading={isLoadingProviders || isLoadingLeases || isLoadingNetworkCapacity}>
       <CustomNextSeo
         title="Providers"
-        url={`https://deploy.cloudmos.io${UrlService.providers()}`}
+        url={`https://console.akash.network${UrlService.providers()}`}
         description="Explore all the providers available on the Akash Network."
       />
 
@@ -419,4 +419,3 @@ export async function getServerSideProps({ params }) {
 }
 
 export default ProvidersPage;
-
