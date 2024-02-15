@@ -1,17 +1,22 @@
+"use client";
 import { ReactNode } from "react";
-import { makeStyles } from "tss-react/mui";
-import { Box, Checkbox, CircularProgress, FormControl, FormHelperText, MenuItem, Select, Slider, TextField, Typography, useTheme } from "@mui/material";
 import { RentGpusFormValues, SdlBuilderFormValues, Service } from "@src/types";
 import { CustomTooltip } from "../shared/CustomTooltip";
-import InfoIcon from "@mui/icons-material/Info";
 import { FormPaper } from "./FormPaper";
 import { Control, Controller } from "react-hook-form";
-import SpeedIcon from "@mui/icons-material/Speed";
-import { cx } from "@emotion/css";
 import { ProviderAttributesSchema } from "@src/types/providerAttributes";
 import { gpuVendors } from "../shared/akash/gpu";
 import { FormSelect } from "./FormSelect";
 import { validationConfig } from "../shared/akash/units";
+import { cn } from "@src/utils/styleUtils";
+import { FormControl, FormDescription } from "../ui/form";
+import { Slider } from "../ui/slider";
+import Spinner from "../shared/Spinner";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
+import { Input } from "../ui/input";
+import { Checkbox } from "../ui/checkbox";
+import { InfoCircle } from "iconoir-react";
+import { MdSpeed } from "react-icons/md";
 
 type Props = {
   serviceIndex: number;
@@ -23,21 +28,21 @@ type Props = {
   currentService: Service;
 };
 
-const useStyles = makeStyles()(theme => ({
-  formControl: {
-    marginBottom: theme.spacing(1.5)
-  },
-  textField: {
-    width: "100%"
-  }
-}));
+// const useStyles = makeStyles()(theme => ({
+//   formControl: {
+//     marginBottom: theme.spacing(1.5)
+//   },
+//   textField: {
+//     width: "100%"
+//   }
+// }));
 
 export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttributesSchema, control, serviceIndex, hasGpu, currentService, hideHasGpu }) => {
-  const { classes } = useStyles();
-  const theme = useTheme();
-
   return (
-    <FormPaper elevation={1} sx={{ padding: hasGpu ? ".5rem 1rem 1rem" : ".5rem 1rem" }}>
+    <FormPaper
+      className={cn({ ["px-4 pb-4 pt-2"]: hasGpu, ["px-4 py-2"]: !hasGpu })}
+      // sx={{ padding: hasGpu ? ".5rem 1rem 1rem" : ".5rem 1rem" }}
+    >
       <Controller
         control={control}
         name={`services.${serviceIndex}.profile.gpu`}
@@ -58,24 +63,18 @@ export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttribu
         }}
         render={({ field, fieldState }) => (
           <FormControl
-            className={cx(classes.formControl, classes.textField)}
-            variant="standard"
-            sx={{ marginBottom: "0 !important" }}
-            error={!!fieldState.error}
+          // className={cx(classes.formControl, classes.textField)}
+          // variant="standard"
+          // sx={{ marginBottom: "0 !important" }}
+          // error={!!fieldState.error}
           >
-            <Box
-              sx={{
-                display: "flex",
-                alignItems: "center"
-              }}
-            >
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <Typography variant="body2" sx={{ display: "flex", alignItems: "center" }}>
-                  <SpeedIcon sx={{ color: theme.palette.grey[600], marginRight: ".5rem" }} fontSize="medium" />
+            <div className="flex items-center">
+              <div className="flex items-center">
+                <div className="flex items-center text-sm">
+                  <MdSpeed className="mr-2 text-muted-foreground" />
                   <strong>GPU</strong>
 
                   <CustomTooltip
-                    arrow
                     title={
                       <>
                         The amount of GPUs required for this workload.
@@ -91,77 +90,95 @@ export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttribu
                       </>
                     }
                   >
-                    <InfoIcon color="disabled" fontSize="small" sx={{ marginLeft: "1rem" }} />
+                    <InfoCircle className="ml-4 text-sm text-muted-foreground" />
                   </CustomTooltip>
-                </Typography>
+                </div>
 
                 {!hideHasGpu && (
                   <Controller
                     control={control}
                     name={`services.${serviceIndex}.profile.hasGpu`}
-                    render={({ field }) => (
-                      <Checkbox checked={field.value} onChange={field.onChange} color="secondary" size="small" sx={{ marginLeft: ".5rem" }} />
-                    )}
+                    render={({ field }) => <Checkbox checked={field.value} onChange={field.onChange} color="secondary" className="ml-2" />}
                   />
                 )}
-              </Box>
+              </div>
 
               {hasGpu && (
-                <Box sx={{ marginLeft: "1rem" }}>
-                  <TextField
+                <div className="ml-4">
+                  <Input
                     type="number"
-                    variant="outlined"
-                    color="secondary"
+                    // variant="outlined"
+                    // color="secondary"
                     value={field.value || ""}
-                    error={!!fieldState.error}
+                    // error={!!fieldState.error}
                     onChange={event => field.onChange(parseFloat(event.target.value))}
-                    inputProps={{ min: 1, step: 1, max: validationConfig.maxGpuAmount }}
-                    size="small"
-                    sx={{ width: "100px" }}
+                    // inputProps={{ min: 1, step: 1, max: validationConfig.maxGpuAmount }}
+                    min={1}
+                    step={1}
+                    max={validationConfig.maxGpuAmount}
+                    // size="small"
+                    className="w-[100px]"
+                    // sx={{ width: "100px" }}
                   />
-                </Box>
+                </div>
               )}
-            </Box>
+            </div>
 
             {hasGpu && (
               <Slider
-                value={field.value || 0}
+                value={[field.value || 0]}
                 min={1}
                 max={validationConfig.maxGpuAmount}
                 step={1}
                 color="secondary"
                 aria-label="GPUs"
-                valueLabelDisplay="auto"
-                onChange={(event, newValue) => field.onChange(newValue)}
+                // valueLabelDisplay="auto"
+                onValueChange={newValue => field.onChange(newValue)}
               />
             )}
 
-            {!!fieldState.error && <FormHelperText>{fieldState.error.message}</FormHelperText>}
+            {!!fieldState.error && <FormDescription>{fieldState.error.message}</FormDescription>}
           </FormControl>
         )}
       />
 
       {hasGpu && (
         <div>
-          <Box sx={{ marginTop: "1rem" }}>
+          <div className="mt-4">
             <Controller
               control={control}
               name={`services.${serviceIndex}.profile.gpuVendor`}
               rules={{ required: "GPU vendor is required." }}
               defaultValue=""
               render={({ field }) => (
-                <Select value={field.value || ""} onChange={field.onChange} variant="outlined" fullWidth size="small" MenuProps={{ disableScrollLock: true }}>
-                  {gpuVendors.map(u => (
-                    <MenuItem key={u.id} value={u.value}>
-                      {u.value}
-                    </MenuItem>
-                  ))}
+                <Select value={field.value || ""} onValueChange={field.onChange}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select unit" className="ml-1 w-[75px]" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectGroup>
+                      {gpuVendors.map(t => {
+                        return (
+                          <SelectItem key={t.id} value={t.value}>
+                            {t.value}
+                          </SelectItem>
+                        );
+                      })}
+                    </SelectGroup>
+                  </SelectContent>
                 </Select>
+                // <Select value={field.value || ""} onChange={field.onChange} variant="outlined" fullWidth size="small" MenuProps={{ disableScrollLock: true }}>
+                //   {gpuVendors.map(u => (
+                //     <MenuItem key={u.id} value={u.value}>
+                //       {u.value}
+                //     </MenuItem>
+                //   ))}
+                // </Select>
               )}
             />
-          </Box>
+          </div>
 
-          <Box sx={{ marginTop: "1rem" }}>
+          <div className="mt-4">
             {providerAttributesSchema ? (
               <FormSelect
                 control={control}
@@ -173,14 +190,12 @@ export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttribu
                 multiple
               />
             ) : (
-              <Box sx={{ display: "flex", alignItems: "center" }}>
-                <CircularProgress size="1rem" color="secondary" />
-                <Typography color="textSecondary" variant="caption" sx={{ marginLeft: ".5rem" }}>
-                  Loading GPU models...
-                </Typography>
-              </Box>
+              <div className="flex items-center">
+                <Spinner size="small" />
+                <span className="ml-2 text-xs text-muted-foreground">Loading GPU models...</span>
+              </div>
             )}
-          </Box>
+          </div>
         </div>
       )}
     </FormPaper>
