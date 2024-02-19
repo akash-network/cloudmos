@@ -9,7 +9,7 @@ import { gpuVendors } from "../shared/akash/gpu";
 import { FormSelect } from "./FormSelect";
 import { validationConfig } from "../shared/akash/units";
 import { cn } from "@src/utils/styleUtils";
-import { FormControl, FormDescription } from "../ui/form";
+import { FormControl, FormDescription, FormItem } from "../ui/form";
 import { Slider } from "../ui/slider";
 import Spinner from "../shared/Spinner";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
@@ -62,7 +62,7 @@ export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttribu
           }
         }}
         render={({ field, fieldState }) => (
-          <FormControl
+          <FormItem
           // className={cx(classes.formControl, classes.textField)}
           // variant="standard"
           // sx={{ marginBottom: "0 !important" }}
@@ -138,7 +138,7 @@ export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttribu
             )}
 
             {!!fieldState.error && <FormDescription>{fieldState.error.message}</FormDescription>}
-          </FormControl>
+          </FormItem>
         )}
       />
 
