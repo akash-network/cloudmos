@@ -9,7 +9,7 @@ import { gpuVendors } from "../shared/akash/gpu";
 import { FormSelect } from "./FormSelect";
 import { validationConfig } from "../shared/akash/units";
 import { cn } from "@src/utils/styleUtils";
-import { FormControl, FormDescription, FormItem } from "../ui/form";
+import { FormDescription, FormItem } from "../ui/form";
 import { Slider } from "../ui/slider";
 import Spinner from "../shared/Spinner";
 import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from "../ui/select";
@@ -17,6 +17,7 @@ import { Input } from "../ui/input";
 import { Checkbox } from "../ui/checkbox";
 import { InfoCircle } from "iconoir-react";
 import { MdSpeed } from "react-icons/md";
+import { Label } from "../ui/label";
 
 type Props = {
   serviceIndex: number;
@@ -28,20 +29,10 @@ type Props = {
   currentService: Service;
 };
 
-// const useStyles = makeStyles()(theme => ({
-//   formControl: {
-//     marginBottom: theme.spacing(1.5)
-//   },
-//   textField: {
-//     width: "100%"
-//   }
-// }));
-
 export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttributesSchema, control, serviceIndex, hasGpu, currentService, hideHasGpu }) => {
   return (
     <FormPaper
-      className={cn({ ["px-4 pb-4 pt-2"]: hasGpu, ["px-4 py-2"]: !hasGpu })}
-      // sx={{ padding: hasGpu ? ".5rem 1rem 1rem" : ".5rem 1rem" }}
+    // className={cn({ ["px-4 pb-4 pt-2"]: hasGpu, ["px-4 py-2"]: !hasGpu })}
     >
       <Controller
         control={control}
@@ -70,9 +61,9 @@ export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttribu
           >
             <div className="flex items-center">
               <div className="flex items-center">
-                <div className="flex items-center text-sm">
-                  <MdSpeed className="mr-2 text-muted-foreground" />
-                  <strong>GPU</strong>
+                <div className="flex items-center">
+                  <MdSpeed className="mr-2 text-2xl text-muted-foreground" />
+                  <strong className="text-sm">GPU</strong>
 
                   <CustomTooltip
                     title={
@@ -90,7 +81,7 @@ export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttribu
                       </>
                     }
                   >
-                    <InfoCircle className="ml-4 text-sm text-muted-foreground" />
+                    <InfoCircle className="ml-2 text-xs text-muted-foreground" />
                   </CustomTooltip>
                 </div>
 
@@ -98,7 +89,7 @@ export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttribu
                   <Controller
                     control={control}
                     name={`services.${serviceIndex}.profile.hasGpu`}
-                    render={({ field }) => <Checkbox checked={field.value} onChange={field.onChange} color="secondary" className="ml-2" />}
+                    render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} color="secondary" className="ml-4" />}
                   />
                 )}
               </div>
@@ -125,16 +116,18 @@ export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttribu
             </div>
 
             {hasGpu && (
-              <Slider
-                value={[field.value || 0]}
-                min={1}
-                max={validationConfig.maxGpuAmount}
-                step={1}
-                color="secondary"
-                aria-label="GPUs"
-                // valueLabelDisplay="auto"
-                onValueChange={newValue => field.onChange(newValue)}
-              />
+              <div className="pt-2">
+                <Slider
+                  value={[field.value || 0]}
+                  min={1}
+                  max={validationConfig.maxGpuAmount}
+                  step={1}
+                  color="secondary"
+                  aria-label="GPUs"
+                  // valueLabelDisplay="auto"
+                  onValueChange={newValue => field.onChange(newValue)}
+                />
+              </div>
             )}
 
             {!!fieldState.error && <FormDescription>{fieldState.error.message}</FormDescription>}
@@ -151,29 +144,25 @@ export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttribu
               rules={{ required: "GPU vendor is required." }}
               defaultValue=""
               render={({ field }) => (
-                <Select value={field.value || ""} onValueChange={field.onChange}>
-                  <SelectTrigger>
-                    <SelectValue placeholder="Select unit" className="ml-1 w-[75px]" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectGroup>
-                      {gpuVendors.map(t => {
-                        return (
-                          <SelectItem key={t.id} value={t.value}>
-                            {t.value}
-                          </SelectItem>
-                        );
-                      })}
-                    </SelectGroup>
-                  </SelectContent>
-                </Select>
-                // <Select value={field.value || ""} onChange={field.onChange} variant="outlined" fullWidth size="small" MenuProps={{ disableScrollLock: true }}>
-                //   {gpuVendors.map(u => (
-                //     <MenuItem key={u.id} value={u.value}>
-                //       {u.value}
-                //     </MenuItem>
-                //   ))}
-                // </Select>
+                <FormItem>
+                  <Label>Vendor</Label>
+                  <Select value={field.value || ""} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select vendor" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectGroup>
+                        {gpuVendors.map(t => {
+                          return (
+                            <SelectItem key={t.id} value={t.value}>
+                              {t.value}
+                            </SelectItem>
+                          );
+                        })}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                </FormItem>
               )}
             />
           </div>
@@ -187,7 +176,7 @@ export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttribu
                 name={`services.${serviceIndex}.profile.gpuModels`}
                 providerAttributesSchema={providerAttributesSchema}
                 required={false}
-                multiple
+                placeholder="Select GPU models"
               />
             ) : (
               <div className="flex items-center">

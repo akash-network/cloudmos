@@ -1,8 +1,10 @@
-import { Autocomplete, Box, ClickAwayListener, TextField } from "@mui/material";
+"use client";
 import { RentGpusFormValues, SdlBuilderFormValues } from "@src/types";
 import { ProviderAttributeSchemaDetailValue, ProviderAttributesSchema } from "@src/types/providerAttributes";
-import { useState } from "react";
 import { Control, Controller, FieldPath } from "react-hook-form";
+import MultipleSelector, { Option } from "../ui/multiple-selector";
+import { cn } from "@src/utils/styleUtils";
+import { Label } from "../ui/label";
 
 type FormSelectProps = {
   control: Control<any, any>;
@@ -12,9 +14,9 @@ type FormSelectProps = {
   className?: string;
   requiredMessage?: string;
   label: string;
-  multiple?: boolean;
   required?: boolean;
   disabled?: boolean;
+  placeholder?: string;
   valueType?: "key" | "description ";
 };
 
@@ -26,68 +28,36 @@ export const FormSelect: React.FunctionComponent<FormSelectProps> = ({
   className,
   requiredMessage,
   label,
-  required = providerAttributesSchema[optionName]?.required || false,
-  multiple,
+  required = providerAttributesSchema[optionName || ""]?.required || false,
+  placeholder,
   disabled,
   valueType = "description"
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
-  const options = providerAttributesSchema[optionName]?.values || [];
+  const options: ProviderAttributeSchemaDetailValue[] = providerAttributesSchema[optionName || ""]?.values || [];
 
   return (
     <Controller
       control={control}
       name={name}
       rules={{
-        required: required ? requiredMessage : null
+        required: required ? requiredMessage : undefined
       }}
       render={({ field, fieldState }) => (
-        <Box sx={{ display: "flex", alignItems: "center" }} className={className}>
-          <Autocomplete
-            disableClearable
-            open={isOpen}
+        <div className={cn(className)}>
+          <Label>{label}</Label>
+          <MultipleSelector
+            value={field.value.map(v => ({ value: v.key, label: (valueType === "key" ? v?.key : v?.description) || "" })) || []}
+            options={options.map(v => ({ value: v.key, label: (valueType === "key" ? v?.key : v?.description) || "" })) || []}
+            hidePlaceholderWhenSelected
+            placeholder={placeholder}
+            emptyIndicator={<p className="text-center text-lg leading-10 text-gray-600 dark:text-gray-400">no results found.</p>}
             disabled={disabled}
-            options={options}
-            value={field.value || (multiple ? ([] as any) : null)}
-            getOptionLabel={option => (valueType === "key" ? option?.key : option?.description) || ""}
-            defaultValue={multiple ? [] : null}
-            isOptionEqualToValue={(option, value) => option.key === value.key}
-            filterSelectedOptions
-            fullWidth
-            multiple={multiple}
-            ChipProps={{ size: "small" }}
-            onChange={(event, newValue: string[] | null | ProviderAttributeSchemaDetailValue[]) => {
-              field.onChange(newValue);
-            }}
-            renderInput={params => (
-              <ClickAwayListener onClickAway={() => setIsOpen(false)}>
-                <TextField
-                  {...params}
-                  label={label}
-                  variant="outlined"
-                  color="secondary"
-                  size="small"
-                  error={!!fieldState.error}
-                  helperText={fieldState.error?.message}
-                  onClick={() => setIsOpen(prev => !prev)}
-                  sx={{ minHeight: "42px" }}
-                />
-              </ClickAwayListener>
-            )}
-            renderOption={(props, option) => {
-              return (
-                <Box
-                  component="li"
-                  sx={{ display: "flex", alignItems: "center", justifyContent: "space-between !important", width: "100%", padding: ".2rem .5rem" }}
-                  {...props}
-                  key={option.key}
-                >
-                  <div>{valueType === "key" ? option.key : option.description}</div>
-                </Box>
-              );
+            className="mt-2"
+            onChange={(newValue: Option[]) => {
+              field.onChange(newValue.map(v => ({ key: v.value, description: v.label })));
             }}
           />
-        </Box>
+        </div>
       )}
     />
   );
