@@ -31,9 +31,7 @@ type Props = {
 
 export const GpuFormControl: React.FunctionComponent<Props> = ({ providerAttributesSchema, control, serviceIndex, hasGpu, currentService, hideHasGpu }) => {
   return (
-    <FormPaper
-    // className={cn({ ["px-4 pb-4 pt-2"]: hasGpu, ["px-4 py-2"]: !hasGpu })}
-    >
+    <FormPaper>
       <Controller
         control={control}
         name={`services.${serviceIndex}.profile.gpu`}
