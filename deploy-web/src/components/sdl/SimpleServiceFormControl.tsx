@@ -43,6 +43,7 @@ type Props = {
   onRemoveService: (index: number) => void;
   serviceCollapsed: number[];
   setServiceCollapsed: Dispatch<SetStateAction<number[]>>;
+  hasSecretOption?: boolean;
 };
 
 export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
@@ -53,7 +54,8 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
   onRemoveService,
   trigger,
   serviceCollapsed,
-  setServiceCollapsed
+  setServiceCollapsed,
+  hasSecretOption
 }) => {
   const [isEditingCommands, setIsEditingCommands] = useState<number | boolean | null>(null);
   const [isEditingEnv, setIsEditingEnv] = useState<number | boolean | null>(null);
@@ -84,7 +86,13 @@ export const SimpleServiceFormControl: React.FunctionComponent<Props> = ({
         <CardContent className="p-0">
           {/** Edit Environment Variables */}
           {_isEditingEnv && (
-            <EnvFormModal control={control} onClose={() => setIsEditingEnv(null)} serviceIndex={serviceIndex} envs={currentService.env || []} />
+            <EnvFormModal
+              control={control}
+              onClose={() => setIsEditingEnv(null)}
+              serviceIndex={serviceIndex}
+              envs={currentService.env || []}
+              hasSecretOption={hasSecretOption}
+            />
           )}
           {/** Edit Commands */}
           {_isEditingCommands && <CommandFormModal control={control} onClose={() => setIsEditingCommands(null)} serviceIndex={serviceIndex} />}
