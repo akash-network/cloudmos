@@ -23,9 +23,10 @@ import {
   RestCosmosStakingDelegatorsRedelegationsResponse
 } from "@src/types/rest";
 import { Block } from "@shared/dbSchemas";
+import { getProviderList } from "../db/providerStatusService";
 
 const defaultNodeUrlMapping = {
-  mainnet: "https://rest.cosmos.directory/akash",
+  mainnet: "https://api.akashnet.net:443",
   sandbox: "https://api.sandbox-01.aksh.pw",
   testnet: "https://api.testnet-02.aksh.pw"
 };
@@ -449,6 +450,14 @@ export async function getAddressDeployments(owner: string, skip: number, limit: 
     }
   });
 
+  const leaseResponse = await axios.get<RestAkashLeaseListResponse>(`${apiNodeUrl}/akash/market/${betaTypeVersionMarket}/leases/list`, {
+    params: {
+      "filters.owner": owner,
+      "filters.state": "active"
+    }
+  });
+  const providers = await getProviderList();
+
   return {
     count: parseInt(response.data.pagination.total),
     results: response.data.deployments.map((x) => ({
@@ -471,7 +480,22 @@ export async function getAddressDeployments(owner: string, skip: number, limit: 
             .map((r) => r.resource.storage.map((s) => parseInt(s.quantity.val)).reduce((a, b) => a + b, 0) * r.count)
             .reduce((a, b) => a + b, 0)
         )
-        .reduce((a, b) => a + b, 0)
+        .reduce((a, b) => a + b, 0),
+      leases: leaseResponse.data.leases
+        .filter((l) => l.lease.lease_id.dseq === x.deployment.deployment_id.dseq)
+        .map((lease) => {
+          const provider = providers.find((p) => p.owner === lease.lease.lease_id.provider);
+          return {
+            id: lease.lease.lease_id.dseq + lease.lease.lease_id.gseq + lease.lease.lease_id.oseq,
+            owner: lease.lease.lease_id.owner,
+            provider: provider,
+            dseq: lease.lease.lease_id.dseq,
+            gseq: lease.lease.lease_id.gseq,
+            oseq: lease.lease.lease_id.oseq,
+            state: lease.lease.state,
+            price: lease.lease.price
+          };
+        })
     }))
   };
 }
