@@ -5,12 +5,12 @@ import { useFieldArray, useForm } from "react-hook-form";
 import { ProviderAttributesSchema, SdlBuilderFormValues, Service } from "@src/types";
 import { nanoid } from "nanoid";
 import { generateSdl } from "@src/utils/sdl/sdlGenerator";
-import { SimpleServiceFormControl } from "../sdl/SimpleServiceFormControl";
+import { SimpleServiceFormControl } from "../../components/sdl/SimpleServiceFormControl";
 import { useProviderAttributesSchema } from "@src/queries/useProvidersQuery";
 import { importSimpleSdl } from "@src/utils/sdl/sdlImport";
-import Spinner from "../shared/Spinner";
-import { Button } from "../ui/button";
-import { Alert } from "../ui/alert";
+import Spinner from "../../components/shared/Spinner";
+import { Button } from "../../components/ui/button";
+import { Alert } from "../../components/ui/alert";
 
 interface Props {
   sdlString: string;
