@@ -27,7 +27,7 @@ HealthChecks_SyncBlocks|ex: `041b2561-be28-4a36-bb3f-36a68f86224e`|[HealthChecks
 HealthChecks_SyncAKTPriceHistory|ex: `041b2561-be28-4a36-bb3f-36a68f86224e`|[HealthChecks.io](https://healthchecks.io) check ID for the `SyncAKTPriceHistory` task.
 HealthChecks_SyncProviderInfo|ex: `041b2561-be28-4a36-bb3f-36a68f86224e`|[HealthChecks.io](https://healthchecks.io) check ID for the `SyncProviderInfo` task.
 HealthChecks_SyncKeybaseInfo|ex: `041b2561-be28-4a36-bb3f-36a68f86224e`|[HealthChecks.io](https://healthchecks.io) check ID for the `SyncKeybaseInfo` task.
-AkashDatabaseCS|ex: `postgres://user:password@localhost:5432/cloudmos-akash`|Akash Database Connection String
+AkashDatabaseCS|ex: `postgres://user:password@localhost:5432/console-akash`|Akash Database Connection String
 ActiveChain|ex: `akash`|Chain code from [chainDefinitions.ts](../shared/chainDefinitions.ts)
 KeepCache|`true` or `false`|Specify if the [block & block response cache](#block-cache-structure) should be kept on drive. Takes a lot of space, but allow rebuilding the database without redownloading every blocks.
 Standby|`true` or `false`|If `true`, indexer will not start. Useful for stopping an indexer deployed on akash without needing to close the lease.

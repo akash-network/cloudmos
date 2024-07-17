@@ -21,11 +21,11 @@ export enum RouteStepKeys {
   createLeases = "create-leases"
 }
 
-const productionMainnetApiUrl = "https://api.cloudmos.io";
-const productionTestnetApiUrl = "https://api-testnet.cloudmos.io";
-const productionSandboxApiUrl = "https://api-sandbox.cloudmos.io";
+const productionMainnetApiUrl = "https://api.console.akash.network";
+const productionTestnetApiUrl = "https://api-testnet.console.akash.network";
+const productionSandboxApiUrl = "https://api-sandbox.console.akash.network";
 const productionStatsAppUrl = "https://stats.akash.network";
-const productionHostnames = ["deploy.cloudmos.io", "console.akash.network", "staging-console.akash.network", "beta.cloudmos.io"];
+const productionHostnames = ["console.akash.network", "staging-console.akash.network"];
 
 export const isProd = process.env.NODE_ENV === "production";
 export const isMaintenanceMode = process.env.MAINTENANCE_MODE === "true";
@@ -112,15 +112,13 @@ function getStatsAppUrl() {
 function getProviderProxyHttpUrl() {
   if (process.env.PROVIDER_PROXY_URL) return process.env.PROVIDER_PROXY_URL;
   if (typeof window === "undefined") return "http://localhost:3040";
-  if (window.location?.hostname === "deploybeta.cloudmos.io") return "https://deployproxybeta.cloudmos.io";
-  if (productionHostnames.includes(window.location?.hostname)) return "https://providerproxy.cloudmos.io";
+  if (productionHostnames.includes(window.location?.hostname)) return "https://providerproxy.console.akash.network";
   return "http://localhost:3040";
 }
 
 function getProviderProxyWsUrl() {
   if (typeof window === "undefined") return "ws://localhost:3040";
-  if (window.location?.hostname === "deploybeta.cloudmos.io") return "wss://deployproxybeta.cloudmos.io";
-  if (productionHostnames.includes(window.location?.hostname)) return "wss://providerproxy.cloudmos.io";
+  if (productionHostnames.includes(window.location?.hostname)) return "wss://providerproxy.console.akash.network";
   return "ws://localhost:3040";
 }
 

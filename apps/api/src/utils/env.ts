@@ -7,7 +7,7 @@ dotenv.config();
 export const env = z
   .object({
     SentryDSN: z.string().optional(),
-    AKASHLYTICS_CORS_WEBSITE_URLS: z.string().optional(),
+    CONSOLE_CORS_WEBSITE_URLS: z.string().optional(),
     NODE_ENV: z.string().optional(),
     SentryServerName: z.string().optional(),
     HealthchecksEnabled: z.string().optional(),
@@ -18,7 +18,7 @@ export const env = z
     Network: z.string().default("mainnet"),
     RestApiNodeUrl: z.string().optional(),
     ServerOrigin: z.string().optional().default("http://localhost:3080"),
-    AkashlyticsGithubPAT: z.string().optional(),
+    ConsoleGithubPAT: z.string().optional(),
     Auth0JWKSUri: z.string().optional(),
     Auth0Audience: z.string().optional(),
     Auth0Issuer: z.string().optional(),
