@@ -20,13 +20,11 @@
     "indexer:dev": "turbo dev --filter=\"./apps/indexer\"",
     "lint": "eslint .",
     "lint:api": "eslint ./apps/api",
-    "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\"",
-    "stats:dev": "turbo dev --filter=\"./apps/stats-web/\" --filter=\"./apps/api\"",
-    "stats:dev:no-db": "cross-env SKIP_DC_DB=true turbo dev --filter=\"./apps/stats-web/\" --filter=\"./apps/api\""
+    "postinstall": "npx patch-package"
   },
   "dependencies": {
-    "drizzle-orm": "^0.31.2",
-    "pg": "^8.11.6"
+    "@cosmos-kit/cosmos-extension-metamask": "^0.10.0",
+    "patch-package": "^8.0.0"
   },
   "devDependencies": {
     "@akashnetwork/dev-config": "*",
