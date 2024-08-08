@@ -29,7 +29,7 @@ module.exports = {
       }
     ]
   },
-  plugins: [new NodemonPlugin(), new webpack.IgnorePlugin({ resourceRegExp: /^pg-native$/ })],
+  plugins: [new NodemonPlugin({ watch: [".env.local"] }), new webpack.IgnorePlugin({ resourceRegExp: /^pg-native$/ })],
   node: {
     __dirname: true
   },
